@@ -57,31 +57,31 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 # relationship_app/views.py
-
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login  # Import the login function
 from django.shortcuts import render, redirect
-from django.views import View
 
+# Login view (using Django's built-in LoginView)
 class UserLoginView(LoginView):
     template_name = 'login.html'
 
+# Logout view (using Django's built-in LogoutView)
 class UserLogoutView(LogoutView):
     template_name = 'logout.html'
 
-class UserRegisterView(View):
-    def get(self, request):
-        form = UserCreationForm()
-        return render(request, 'register.html', {'form': form})
-
-    def post(self, request):
+# Register view (using Django's built-in UserCreationForm)
+def register(request):
+    if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log in the user after successful registration
-            return redirect('login')  # Redirect to login page or home page
-        return render(request, 'register.html', {'form': form})
+            form.save()
+            return redirect('login')  # Redirect to login page after successful registration
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
+
+
 # relationship_app/views.py
 
 from django.contrib.auth.forms import UserCreationForm
