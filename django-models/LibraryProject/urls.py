@@ -20,3 +20,21 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+# relationship_app/urls.py
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('books/', views.list_books, name='list_books'),  # Function-based view for listing books
+    path('library/<int:pk>/', views.LibraryDetailView.as_view(), name='library_detail'),  # Class-based view for library details
+]
+# LibraryProject/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('relationship_app/', include('relationship_app.urls')),  # Include relationship_app URLs
+]
