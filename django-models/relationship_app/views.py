@@ -36,8 +36,8 @@ class LibraryDetailView(DetailView):
 
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login  # Import the login function
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
 from django.views import View
 
 class UserLoginView(LoginView):
@@ -54,6 +54,7 @@ class UserRegisterView(View):
     def post(self, request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save()
+            login(request, user)  # Log in the user after successful registration
+            return redirect('login')  # Redirect to login page or home page
         return render(request, 'register.html', {'form': form})
