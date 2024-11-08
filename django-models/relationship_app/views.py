@@ -82,3 +82,14 @@ class UserRegisterView(View):
             login(request, user)  # Log in the user after successful registration
             return redirect('login')  # Redirect to login page or home page
         return render(request, 'register.html', {'form': form})
+# relationship_app/views.py
+
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+
+# Create the user registration view
+class UserRegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('login')  # Redirect to login page after successful registration
