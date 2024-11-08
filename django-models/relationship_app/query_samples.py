@@ -20,11 +20,11 @@ def get_books_in_library(library_name):
     except Library.DoesNotExist:
         return f"No library found with name {library_name}"
 
-# 3. Retrieve the librarian for a library
+# 3. Retrieve the librarian for a library by querying Librarian model directly
 def get_librarian_for_library(library_name):
     try:
         library = Library.objects.get(name=library_name)
-        librarian = library.librarian  # Assuming `librarian` is a OneToOneField in Library
+        librarian = Librarian.objects.get(library=library)  # Explicitly using Librarian.objects.get with library instance
         return librarian
     except Library.DoesNotExist:
         return f"No library found with name {library_name}"
