@@ -33,41 +33,29 @@ class LibraryDetailView(DetailView):
     context_object_name = 'library'
 
 
-
 # relationship_app/views.py
+
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login  # Import the login function
 from django.shortcuts import render, redirect
+from django.views import View
 
-# Login view (using Django's built-in LoginView)
 class UserLoginView(LoginView):
     template_name = 'login.html'
 
-# Logout view (using Django's built-in LogoutView)
 class UserLogoutView(LogoutView):
     template_name = 'logout.html'
 
-# Register view (using Django's built-in UserCreationForm)
-def register(request):
-    if request.method == 'POST':
+class UserRegisterView(View):
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, 'register.html', {'form': form})
+
+    def post(self, request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirect to login page after successful registration
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
-
-
-
-# relationship_app/views.py
-
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
-
-# Create the user registration view
-class UserRegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = 'register.html'
-    success_url = reverse_lazy('login')  # Redirect to login page after successful registration
+            user = form.save()
+            login(request, user)  # Log in the user after successful registration
+            return redirect('login')  # Redirect to login page or home page
+        return render(request, 'register.html', {'form': form})
