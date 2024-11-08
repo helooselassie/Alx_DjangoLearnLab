@@ -1,17 +1,38 @@
-# relationship_app/query_samples.py
+# query_samples.py
 
-from relationship_app.models import Author, Book, Library, Librarian
+from relationship_app.models import Library, Book, Author, Librarian
 
-# Query all books by a specific author (e.g., author with id=1)
-author = Author.objects.get(id=1)
-books_by_author = Book.objects.filter(author=author)
-print("Books by author:", books_by_author)
+# 1. Query all books by a specific author
+def get_books_by_author(author_name):
+    try:
+        author = Author.objects.get(name=author_name)
+        books = Book.objects.filter(author=author)
+        return books
+    except Author.DoesNotExist:
+        return f"No author found with name {author_name}"
 
-# List all books in a library (e.g., library with id=1)
-library = Library.objects.get(id=1)
-books_in_library = library.books.all()
-print("Books in library:", books_in_library)
+# 2. List all books in a library
+def get_books_in_library(library_name):
+    try:
+        library = Library.objects.get(name=library_name)
+        books = library.books.all()  # Assuming `books` is a ManyToManyField in Library
+        return books
+    except Library.DoesNotExist:
+        return f"No library found with name {library_name}"
 
-# Retrieve the librarian for a library (e.g., library with id=1)
-librarian = Librarian.objects.get(library=library)
-print("Librarian for the library:", librarian)
+# 3. Retrieve the librarian for a library
+def get_librarian_for_library(library_name):
+    try:
+        library = Library.objects.get(name=library_name)
+        librarian = library.librarian  # Assuming `librarian` is a OneToOneField in Library
+        return librarian
+    except Library.DoesNotExist:
+        return f"No library found with name {library_name}"
+    except Librarian.DoesNotExist:
+        return f"No librarian found for the library {library_name}"
+
+# Sample outputs for testing
+if __name__ == "__main__":
+    print(get_books_by_author("George Orwell"))
+    print(get_books_in_library("Central Library"))
+    print(get_librarian_for_library("Central Library"))
