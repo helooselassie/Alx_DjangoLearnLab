@@ -27,6 +27,8 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', UserLogoutView.as_view(template_name='logout.html'), name='logout'),
     path('register/', UserRegisterView.as_view(), name='register'),
+    path('register/', register, name='register')
+
 ]
 
 from django.urls import path
