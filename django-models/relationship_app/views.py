@@ -121,6 +121,19 @@ def edit_book(request, book_id):
         form = BookForm(instance=book)
     return render(request, 'relationship_app/edit_book.html', {'form': form})
 
+# relationship_app/views.py
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import permission_required
+from .models import Book
+
+@permission_required('relationship_app.can_delete_book')
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == "POST":
+        book.delete()
+        return redirect('book_list')
+    return render(request, 'relationship_app/delete_book.html', {'book': book})
+
 
 
 # relationship_app/views.py
