@@ -15,44 +15,34 @@ class LibraryDetailView(DetailView):
     model = Library
     template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
-# relationship_app/views.py
-
-from django.shortcuts import render
-from django.views.generic.detail import DetailView  # Import DetailView
-from .models import Book, Library
-
-# Function-based view to list all books
-def list_books(request):
-    books = Book.objects.all()  # Query all books
-    return render(request, 'relationship_app/list_books.html', {'books': books})
-
-# Class-based view for displaying details of a specific library
-class LibraryDetailView(DetailView):
-    model = Library
-    template_name = 'relationship_app/library_detail.html'
-    context_object_name = 'library'
 
 
-# relationship_app/views.py
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
-from django.contrib.auth.views import LoginView, LogoutView
 
-# Login view (using Django's built-in LoginView)
-class UserLoginView(LoginView):
-    template_name = 'login.html'
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
 
-# Logout view (using Django's built-in LogoutView)
-class UserLogoutView(LogoutView):
-    template_name = 'logout.html'
+def logout_view(request):
+    logout(request)
+    return render(request, 'logout.html')
 
-# Register view (using Django's built-in UserCreationForm)
-def register(request):
+def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirect to login after successful registration
+            user = form.save()
+            login(request, user)
+            return redirect('home')
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})

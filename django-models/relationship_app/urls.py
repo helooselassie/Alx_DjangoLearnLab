@@ -9,25 +9,12 @@ urlpatterns = [
 ]
 
 
-# relationship_app/urls.py
-
 from django.urls import path
-from .views import UserLoginView, UserLogoutView, UserRegisterView  # Import your views
+from . import views
 
 urlpatterns = [
-    path('login/', UserLoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', UserLogoutView.as_view(template_name='logout.html'), name='logout'),
-    path('register/', UserRegisterView.as_view(), name='register'),
-    path('register/', register, name='register')
+    # ... other URL patterns
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register_view, name='register'),
 ]
-
-# relationship_app/urls.py
-from django.urls import path
-from .views import UserLoginView, UserLogoutView, register  # Ensure 'register' is imported
-
-urlpatterns = [
-    path('login/', UserLoginView.as_view(), name='login'),
-    path('logout/', UserLogoutView.as_view(), name='logout'),
-    path('register/', register, name='register'),  # This links to the register view
-]
-
