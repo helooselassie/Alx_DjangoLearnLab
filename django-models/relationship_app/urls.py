@@ -47,3 +47,13 @@ urlpatterns = [
     path("books/<int:book_id>/delete/", views.delete_book, name="delete_book"),
     # Other URLs for the app
 ]
+
+# relationship_app/urls.py
+from django.urls import path
+from .views import add_book, edit_book
+
+urlpatterns = [
+    path('add_book/', add_book, name='add_book'),
+    path('edit_book/<int:book_id>/', edit_book, name='edit_book'),
+    # other URL patterns
+]
