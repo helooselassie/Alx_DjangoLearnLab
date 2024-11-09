@@ -45,17 +45,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
-# Registration view
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save()  # Save the new user
             messages.success(request, 'Account created successfully! You can now log in.')
-            return redirect('login')  # Redirect to login page after successful registration
+            return redirect('login')  # Redirect to the login page after successful registration
         else:
             messages.error(request, 'Error creating account. Please check the details and try again.')
     else:
-        form = UserCreationForm()
-    
+        form = UserCreationForm()  # Create an empty form for GET request
+
+    # Ensure the 'register.html' template is rendered and the form is passed
     return render(request, 'register.html', {'form': form})
