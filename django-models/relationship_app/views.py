@@ -39,3 +39,23 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return render(request, 'logout.html')
+
+# relationship_app/views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+
+# Registration view
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully! You can now log in.')
+            return redirect('login')  # Redirect to login page after successful registration
+        else:
+            messages.error(request, 'Error creating account. Please check the details and try again.')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'register.html', {'form': form})
