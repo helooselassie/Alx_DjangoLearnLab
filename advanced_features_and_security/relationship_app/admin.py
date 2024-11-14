@@ -1,3 +1,7 @@
-from django.contrib import admin
+# LibraryProject/bookshelf/admin.py
 
-# Register your models here.
+from django.contrib import admin
+from .models import Library, Book
+
+admin.site.register(Library)
+admin.site.register(Book)
