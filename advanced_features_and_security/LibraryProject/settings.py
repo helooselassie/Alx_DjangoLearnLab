@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'relationship_app',
-    'advanced_features_and_security'
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -85,8 +85,6 @@ DATABASES = {
     }
 }
 
-# advanced_features_and_security/settings.py
-AUTH_USER_MODEL = 'advanced_features_and_security.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -130,3 +128,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
