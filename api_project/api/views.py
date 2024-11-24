@@ -1,7 +1,7 @@
-from rest_framework.generics import ListAPIView
-from .models import Book  # Assuming the model name is Book
-from .serializers import BookSerializer  # Assuming the serializer is named BookSerializer
+from rest_framework import generics
+from .models import Book  # Adjust to match your model name
+from .serializers import BookSerializer  # Ensure this matches your serializer
 
-class BookList(ListAPIView):
+class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
