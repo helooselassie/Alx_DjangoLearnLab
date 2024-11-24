@@ -17,6 +17,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+]
+
+from django.urls import path
+from .views import BookList
+from django.urls import include, path
+
+urlpatterns = [
+    path('books/', BookList.as_view(), name='book-list'),  # Maps to the BookList view
+]
+urlpatterns = [
+    path('api/', include('api.urls')),  # Connects api app URLs to the project
 ]
