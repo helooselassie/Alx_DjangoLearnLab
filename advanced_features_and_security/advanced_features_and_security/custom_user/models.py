@@ -1,18 +1,14 @@
-# custom_user/models.py
+# bookshelf/models.py
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
 class CustomUserManager(BaseUserManager):
     """
-    Custom user model manager where email is the unique identifier
-    for authentication instead of usernames.
+    Custom user model manager where email is the unique identifier for authentication instead of usernames.
     """
 
     def create_user(self, email, password=None, **extra_fields):
-        """
-        Creates and saves a User with the given email and password.
-        """
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -22,9 +18,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        """
-        Creates and saves a superuser with the given email and password.
-        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -32,11 +25,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    # Additional fields for your custom user model
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
-    # Link the custom manager to the model
     objects = CustomUserManager()
 
     def __str__(self):
