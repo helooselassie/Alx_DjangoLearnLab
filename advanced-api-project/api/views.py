@@ -17,14 +17,15 @@ from django_filters import rest_framework
 from .filters import BookFilter
 from rest_framework.filters import OrderingFilter
 from rest_framework import filters
-
+from rest_framework import filters, generics
 
 
 class BookListView(generics.ListAPIView):
        queryset = Book.objects.all()
        serializer_class = BookSerializer
        permission_classes = [AllowAny]
-       filter_backends = [filters.OrderingFilter]
+       filter_backends = [filters.SearchFilter, filters.OrderingFilter]  # Include both filters
+       search_fields = ['title', 'author__name']  # Fields to search
        ordering_fields = ['title', 'publication_year']  # Specify fields that can be used for ordering
        ordering = ['title']  # Set a default ordering
 
