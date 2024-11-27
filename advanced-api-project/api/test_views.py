@@ -1,7 +1,36 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
+from django.contrib.auth.models import User
 from rest_framework import status
 from .models import Book
+
+class BookAPITestCase(APITestCase):
+    def setUp(self):
+        # Create a test user
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        # Log in the user
+        self.client.login(username="testuser", password="testpassword")
+        # Create a test book
+        self.book = Book.objects.create(title="Test Book", author="Author Test", price=25.0)
+
+    def test_get_books(self):
+        # Ensure authenticated user can access the list of books
+        response = self.client.get("/api/books/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_book(self):
+        # Test creating a book as an authenticated user
+        data = {"title": "New Book", "author": "New Author", "price": 30.0}
+        response = self.client.post("/api/books/", data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["title"], "New Book")
+
+    def test_unauthenticated_access(self):
+        # Log out the user to test unauthenticated access
+        self.client.logout()
+        response = self.client.get("/api/books/")
+        self.assertEqual(response.status_code, 403)  # Adjust based on your permissions
 
 class BookAPITestCase(TestCase):
     def setUp(self):
