@@ -5,11 +5,13 @@
 from rest_framework import serializers
 from .models import Author, Book
 import datetime
+from .models import Book
 
 class BookSerializer(serializers.ModelSerializer):
        class Meta:
            model = Book
            fields = ['title', 'publication_year', 'author']
+           fields = '__all__'  # Or list specific fields if necessary
 
        def validate_publication_year(self, value):
            if value > datetime.date.today().year:
@@ -22,3 +24,7 @@ class AuthorSerializer(serializers.ModelSerializer):
        class Meta:
            model = Author
            fields = ['name', 'books']
+
+
+
+        
