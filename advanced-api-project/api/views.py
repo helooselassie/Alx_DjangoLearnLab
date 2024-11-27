@@ -16,6 +16,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters import rest_framework
 from .filters import BookFilter
 from rest_framework.filters import OrderingFilter
+from rest_framework import filters
 
 
 
@@ -23,6 +24,9 @@ class BookListView(generics.ListAPIView):
        queryset = Book.objects.all()
        serializer_class = BookSerializer
        permission_classes = [AllowAny]
+       filter_backends = [filters.OrderingFilter]
+       ordering_fields = ['title', 'publication_year']  # Specify fields that can be used for ordering
+       ordering = ['title']  # Set a default ordering
 
 class BookDetailView(generics.RetrieveAPIView):
        queryset = Book.objects.all()
