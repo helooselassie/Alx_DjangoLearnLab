@@ -6,6 +6,26 @@ from .models import Article
 from django.shortcuts import render, get_object_or_404
 from .models import Book  # Import the Book model
 from django.http import HttpResponse
+from django.shortcuts import render
+from .forms import ExampleForm
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            # You could save this data or send an email, etc.
+        else:
+            # Handle form errors
+            return render(request, 'bookshelf/form_example.html', {'form': form})
+
+    else:
+        form = ExampleForm()
+
+    return render(request, 'bookshelf/form_example.html', {'form': form})
 
 def my_view(request):
     response = HttpResponse("Hello, world!")
