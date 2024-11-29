@@ -1,5 +1,5 @@
 """
-URL configuration for advanced_features_and_security project.
+URL configuration for LibraryProject project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -19,4 +19,14 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+]
+
+# LibraryProject/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('relationship_app/', include('relationship_app.urls')),  # Include relationship_app URLs
 ]
