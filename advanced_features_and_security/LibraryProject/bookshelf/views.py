@@ -5,6 +5,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Article
 from django.shortcuts import render, get_object_or_404
 from .models import Book  # Import the Book model
+from django.http import HttpResponse
+
+def my_view(request):
+    response = HttpResponse("Hello, world!")
+    response['Content-Security-Policy'] = "default-src 'self';"
+    return response
 
 def book_list(request):
     books = Book.objects.all()  # Get all books
