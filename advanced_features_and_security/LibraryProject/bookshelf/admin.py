@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Book
 from .models import CustomUser
 from django.apps import AppConfig
+from django.contrib.auth.admin import UserAdmin
+
 
 class BookshelfConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'

@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.conf import settings
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -50,3 +54,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
