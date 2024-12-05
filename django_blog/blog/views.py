@@ -27,6 +27,47 @@ class AddCommentView(LoginRequiredMixin, View):
             return redirect('post-detail', pk=post_id)
         return redirect('post-detail', pk=post_id)
 
+# Create Comment View (for adding new comments)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add_comment.html'
+
+    def form_valid(self, form):
+        # Set the post and author when the form is valid
+        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['post_id']})
+
+# Update Comment View (for editing existing comments)
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
+
+# Delete Comment View (for deleting comments)
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/delete_comment.html'
+    context_object_name = 'comment'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
 class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request, comment_id):
         comment = get_object_or_404(Comment, id=comment_id)
