@@ -4,6 +4,9 @@
 {% if user == post.author %}
     <a href="{% url 'post-update' post.pk %}">Edit</a>
     <a href="{% url 'post-delete' post.pk %}">Delete</a>
+    <!-- In the post detail template (post_detail.html) -->
+<a href="{% url 'comment-add' post_id=post.id %}">Add Comment</a>
+
 {% endif %}
 <a href="{% url 'post-list' %}">Back to All Posts</a>
 <h2>Comments</h2>
