@@ -9,6 +9,52 @@ from django import forms
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Post, Comment
+from .forms import CommentForm
+
+class AddCommentView(LoginRequiredMixin, View):
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('post-detail', pk=post_id)
+        return redirect('post-detail', pk=post_id)
+
+class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def get(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        form = CommentForm(instance=comment)
+        return render(request, 'blog/edit_comment.html', {'form': form})
+
+    def post(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('post-detail', pk=comment.post.id)
+        return redirect('post-detail', pk=comment.post.id)
+
+    def test_func(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
+        return self.request.user == comment.author
+
+class DeleteCommentView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def post(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+        post_id = comment.post.id
+        comment.delete()
+        return redirect('post-detail', pk=post_id)
+
+    def test_func(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['comment_id'])
+        return self.request.user == comment.author
 
 class PostListView(ListView):
     model = Post
