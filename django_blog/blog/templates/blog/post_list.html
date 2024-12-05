@@ -1,0 +1,9 @@
+<h2>All Blog Posts</h2>
+{% for post in posts %}
+    <div>
+        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p>By {{ post.author }} on {{ post.created_at }}</p>
+        <p>{{ post.content|slice:":100" }}...</p>
+    </div>
+{% endfor %}
+<a href="{% url 'post-create' %}">Create New Post</a>
