@@ -1,10 +1,7 @@
 <h2>{{ post.title }}</h2>
 <p>By {{ post.author }} on {{ post.created_at }}</p>
 <p>{{ post.content }}</p>
-{% if user == post.author %}
-    <a href="{% url 'comment-create' post_id=post.id %}">Add a Comment</a>
-    <a href="{% url 'comment-update' pk=comment.id %}">Edit</a>
-    <a href="{% url 'comment-delete' pk=comment.id %}">Delete</a>
+{% if user == post.author %}    
     <a href="{% url 'post-update' post.pk %}">Edit</a>
     <a href="{% url 'post-delete' post.pk %}">Delete</a>
 {% endif %}
@@ -34,3 +31,6 @@
 {% else %}
     <p>You need to <a href="{% url 'login' %}">log in</a> to comment.</p>
 {% endif %}
+<a href="{% url 'comment-create' post_id=post.id %}">Add a Comment</a>
+<a href="{% url 'comment-update' pk=comment.id %}">Edit</a>
+<a href="{% url 'comment-delete' pk=comment.id %}">Delete</a>
