@@ -1,12 +1,18 @@
+<!-- For adding a comment to a specific post -->
+<a href="{% url 'comment-add' post_id=post.id %}">Add Comment</a>
+
+<!-- For editing a comment -->
+<a href="{% url 'comment-edit' pk=comment.id %}">Edit Comment</a>
+
+<!-- For deleting a comment -->
+<a href="{% url 'comment-delete' pk=comment.id %}">Delete Comment</a>
+
 <h2>{{ post.title }}</h2>
 <p>By {{ post.author }} on {{ post.created_at }}</p>
 <p>{{ post.content }}</p>
 {% if user == post.author %}
     <a href="{% url 'post-update' post.pk %}">Edit</a>
     <a href="{% url 'post-delete' post.pk %}">Delete</a>
-    <!-- In the post detail template (post_detail.html) -->
-<a href="{% url 'comment-add' post_id=post.id %}">Add Comment</a>
-
 {% endif %}
 <a href="{% url 'post-list' %}">Back to All Posts</a>
 <h2>Comments</h2>
