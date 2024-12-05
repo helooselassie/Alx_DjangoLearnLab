@@ -1,4 +1,5 @@
 <h2>Edit Comment</h2>
+<a href="{% url 'comment-update' pk=comment.id %}">Edit Comment</a>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

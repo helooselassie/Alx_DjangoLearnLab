@@ -1,12 +1,3 @@
-<!-- For adding a comment to a specific post -->
-<a href="{% url 'comment-add' post_id=post.id %}">Add Comment</a>
-
-<!-- For editing a comment -->
-<a href="{% url 'comment-edit' pk=comment.id %}">Edit Comment</a>
-
-<!-- For deleting a comment -->
-<a href="{% url 'comment-delete' pk=comment.id %}">Delete Comment</a>
-
 <h2>{{ post.title }}</h2>
 <p>By {{ post.author }} on {{ post.created_at }}</p>
 <p>{{ post.content }}</p>

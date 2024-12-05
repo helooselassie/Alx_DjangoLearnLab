@@ -1,4 +1,5 @@
 <h2>Add a Comment</h2>
+<a href="{% url 'comment-create' post_id=post.id %}">Add Comment</a>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
