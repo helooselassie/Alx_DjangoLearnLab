@@ -10,10 +10,21 @@ from .views import (
     CommentUpdateView,
     CommentDeleteView,
     search_view,
+    PostByTagListView
 )
 from . import views
 
 app_name = 'blog'
+
+urlpatterns = [
+     # Add the URL for posts filtered by a specific tag (using a tag slug)
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),  # New URL for posts by tag
+    path('', PostListView.as_view(), name='post-list'),  # Default view for all posts
+    path('<int:pk>/', PostDetailView.as_view(), name='post-detail'),  # Detail view for a single post
+    
+    # Add the URL for posts filtered by a specific tag (using a tag slug)
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),  # New URL for posts by tag
+]
 
 urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),

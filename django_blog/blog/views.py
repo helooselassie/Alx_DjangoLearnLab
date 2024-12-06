@@ -14,7 +14,16 @@ from .models import Post, Comment
 from taggit.models import Tag
 from django.db.models import Q
 
+# View to display posts filtered by a tag
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+    context_object_name = 'posts'
 
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']  # Capture the tag_slug from the URL
+        tag = Tag.objects.get(slug=tag_slug)  # Get the tag object
+        return Post.objects.filter(tags=tag)  # Filter posts by this tag
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
