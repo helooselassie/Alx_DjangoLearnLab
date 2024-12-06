@@ -1,40 +1,41 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from .models import Post, Comment
-from taggit.forms import TagWidget  # For handling tags if using django-taggit
+from taggit.forms import TagWidget  # Import TagWidget if using django-taggit for tags
 
-# Post creation and update form with a custom widget for tags
+# Post creation and update form with custom widgets
 class PostForm(forms.ModelForm):
-    # Define the tags field with TagWidget if using django-taggit
+    # Custom widget for the 'tags' field, if using django-taggit
     tags = forms.CharField(
-        widget=TagWidget(),  # Uses TagWidget to allow tag input
+        widget=TagWidget(),  # Uses the TagWidget for tag input
         required=False
     )
+    
+    # You can also customize other fields if necessary
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40}))  # Custom textarea widget
 
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']  # Include tags in the form fields
 
-# Comment form doesn't require a custom widget but could include one if needed
+# Comment form with no widget customization needed (but can be customized if needed)
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
 
-# Optional: Define a custom widget for any form field
-class CustomTagWidget(forms.TextInput):
-    template_name = 'custom_widget_template.html'  # Specify the template for the widget
-
+# Optionally define a custom widget if needed for other fields
+class CustomTextWidget(forms.Textarea):
     def __init__(self, attrs=None):
+        # You can add custom attributes for the widget here
         if attrs is None:
             attrs = {}
-        attrs.update({'class': 'custom-class'})  # Add custom classes or attributes
+        attrs.update({'class': 'custom-text-widget', 'placeholder': 'Enter text here...'})
         super().__init__(attrs)
 
-# Another example: using a custom widget for another form field
-class CustomContentWidget(forms.Textarea):
-    def __init__(self, attrs=None):
-        if attrs is None:
-            attrs = {}
-        attrs.update({'class': 'custom-textarea-class'})
-        super().__init__(attrs)
+# Using the CustomTextWidget in a form
+class CustomPostForm(forms.ModelForm):
+    content = forms.CharField(widget=CustomTextWidget(attrs={'rows': 5, 'cols': 60}))  # Apply custom widget
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
