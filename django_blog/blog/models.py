@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
+from django.utils.timezone import now
+
 
 
 class Post(models.Model):
@@ -11,6 +13,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     tags = TaggableManager()  # Add tagging functionality
+    published_date = models.DateTimeField(default=now, blank=True, null=True)
 
     def __str__(self):
         return self.title
