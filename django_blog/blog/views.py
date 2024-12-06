@@ -15,6 +15,8 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment
 from .forms import CommentForm
+from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
+
 
 class AddCommentView(LoginRequiredMixin, View):
     def post(self, request, post_id):

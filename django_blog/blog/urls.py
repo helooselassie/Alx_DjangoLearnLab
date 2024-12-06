@@ -4,6 +4,7 @@ from . import views
 from .views import AddCommentView, EditCommentView, DeleteCommentView
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 
+app_name = 'blog'
 
 from .views import (
     PostListView,
