@@ -64,6 +64,4 @@ A Django-based API for a social media platform that allows users to create posts
 - To create a post, send a `POST` request to `/api/posts/`.
 - To follow a user, send a `POST` request to `/api/follow/`.
 
-## License
 
-This project is licensed under the MIT License.
