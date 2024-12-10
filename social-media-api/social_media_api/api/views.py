@@ -9,22 +9,29 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-@csrf_exempt
-def register_user(request):
-    if request.method == 'POST':
-        # Parse JSON data
-        data = json.loads(request.body.decode('utf-8'))
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
 
-        # Dummy logic to simulate user registration
-        if username and email and password:
-            return JsonResponse({"message": f"User {username} registered successfully!"}, status=201)
-        else:
-            return JsonResponse({"error": "Invalid input"}, status=400)
+@csrf_exempt
+def user_register(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            email = data.get('email')
+            
+            if not username or not email:
+                return JsonResponse({"error": "Username and email are required."}, status=400)
+            
+            # Simulating user registration logic
+            return JsonResponse({
+                "message": "User registered successfully!",
+                "username": username,
+                "email": email
+            }, status=201)
+        
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
     else:
-        return JsonResponse({"error": "Method not allowed"}, status=405)
+        return JsonResponse({"error": "Only POST requests are allowed"}, status=405)
 
 
 @api_view(['GET'])
