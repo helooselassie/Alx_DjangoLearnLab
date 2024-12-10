@@ -1,10 +1,7 @@
 from django.urls import path
-from . import views
-from .views import user_register
+from .views import PostListCreate, PostDetail
 
-
-
-urlpatterns = [    
-    path('users/register/', user_register, name='user-register'),
-    path('users/register/', views.register_user, name='register_user'),  # User registration endpoint
+urlpatterns = [
+    path('posts/', PostListCreate.as_view(), name='post-list-create'),
+    path('posts/<int:pk>/', PostDetail.as_view(), name='post-detail'),
 ]
