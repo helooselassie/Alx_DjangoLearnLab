@@ -5,7 +5,14 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer, UserSerializer
 from .models import CustomUser
+from rest_framework.permissions import IsAuthenticated
 
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Logic to retrieve user profile information
+        return Response({"message": "User profile data"})
 class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
