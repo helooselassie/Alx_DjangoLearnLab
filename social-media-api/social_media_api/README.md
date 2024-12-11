@@ -65,3 +65,25 @@ A Django-based API for a social media platform that allows users to create posts
 - To follow a user, send a `POST` request to `/api/follow/`.
 
 
+# API Authentication Setup
+
+## Overview
+
+This document outlines how to set up token-based authentication for your Django API using Django REST Framework (DRF) and SimpleJWT.
+
+## Installation
+
+Make sure to install the required packages:
+
+```bash
+pip install djangorestframework djangorestframework-simplejwt
+
+
+
+### Step 6: Push Changes to GitHub
+
+Once you have implemented this setup, commit your changes and push them to your GitHub repository.
+
+### Conclusion
+
+By following these steps, you should have successfully added basic authentication to your Django API using token-based authentication with Django REST Framework and SimpleJWT. If you have any further questions or run into issues, feel free to ask!
