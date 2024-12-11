@@ -28,12 +28,22 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+    
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
-        model = get_user_model()
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
+        model = get_user_model()  # This gets the custom user model
+        fields = ('username', 'password')
 
-
+    def create(self, validated_data):
+        user = get_user_model().objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password']
+        )
+        return user
         
 
 class RegisterSerializer(serializers.ModelSerializer):
