@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)  # Ensures password is not returned in responses
 
     class Meta:
         model = User  # Use your custom user model
@@ -13,6 +13,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        # Create a new user with hashed password
         user = User(**validated_data)
         user.set_password(validated_data['password'])  # Hash the password
         user.save()
@@ -23,8 +24,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+    username = serializers.CharField()  # Using CharField to validate username input
+    password = serializers.CharField()  # Using CharField to validate password input
 
     def validate(self, data):
         username = data.get('username')
@@ -63,6 +64,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        # Create a new user with hashed password
         user = User(**validated_data)
         user.set_password(validated_data['password'])  # Hash the password
         user.save()
