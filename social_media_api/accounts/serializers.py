@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from .models import CustomUser
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -9,12 +8,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = CustomUser  # Use your custom user model
+        model = User  # Use your custom user model
         fields = ['username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser(**validated_data)
+        user = User(**validated_data)
         user.set_password(validated_data['password'])  # Hash the password
         user.save()
         
@@ -32,14 +31,9 @@ class UserLoginSerializer(serializers.Serializer):
         password = data.get('password')
 
         if username and password:
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
+            user = authenticate(username=username, password=password)
+            if not user:
                 raise serializers.ValidationError("Invalid username or password.")
-
-            if not user.check_password(password):
-                raise serializers.ValidationError("Invalid username or password.")
-
             data['user'] = user
         else:
             raise serializers.ValidationError("Must include 'username' and 'password'.")
@@ -49,25 +43,30 @@ class UserLoginSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser  # Use your custom user model
-        fields = ('username', 'password')
+        model = User  # Use your custom user model
+        fields = ('username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password']
-        )
+        # Create a new user with hashed password
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])  # Hash the password
+        user.save()
+        
         return user
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser  # Use your custom user model
+        model = User  # Use your custom user model
         fields = ['username', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])  # Hash the password
+        user.save()
+        
+        # Create an authentication token for the new user
         Token.objects.create(user=user)
         return user
