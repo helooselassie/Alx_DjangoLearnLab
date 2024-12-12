@@ -3,7 +3,13 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from accounts.serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
 from django.contrib.auth.models import User
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+from .serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
 
+
+User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
@@ -27,3 +33,9 @@ class LoginView(generics.GenericAPIView):
             'token': token.key,
             'username': user.username
         })
+    
+class UserView(generics.RetrieveAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = CustomUserSerializer
