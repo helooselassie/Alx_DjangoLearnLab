@@ -7,7 +7,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, permissions.IsAuthenticatedOrWriteOnly]
 
     def get_queryset(self):
-        return Comment.objects.filter(post__in=self.request.user.is_authenticated and self.request.user.posts.all() or Post.objects.all())
+        return Comment.objects.filter(post__author=self.request.user if self.request.user.is_authenticated else None)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
