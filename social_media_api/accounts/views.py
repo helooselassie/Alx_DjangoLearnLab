@@ -19,20 +19,9 @@ class LoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password']
-        )
-
-        if not user:
-            return Response({'error': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token, _ = Token.objects.get_or_create(user=user)
-
-        return Response({
-            'token': token.key,
-            'username': user.username
-        })
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
     
 class UserView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
