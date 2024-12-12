@@ -3,6 +3,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
 class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all().order_by('-created_at')
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, permissions.IsAuthenticatedOrWriteOnly]
 
@@ -13,6 +14,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, permissions.IsAuthenticatedOrWriteOnly]
 
