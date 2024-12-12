@@ -29,23 +29,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'password', 'password2', 'email', 'bio', 'profile_picture')
         extra_kwargs = {'password': {'write_only': True}}
 
-    def save(self):
-        user = User(
-            username=self.validated_data['username'],
-            email=self.validated_data['email'],
-        )
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
-
-        if password != password2:
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({'password': 'Passwords must match.'})
+        return attrs
 
-        user.set_password(password)
-        user.save()
-
-        # Create and save the token for the user
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+            bio=validated_data.get('bio', ''),
+            profile_picture=validated_data.get('profile_picture', None)
+        )
         Token.objects.create(user=user)
-
         return user
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -65,5 +62,5 @@ class LoginSerializer(serializers.ModelSerializer):
         if not user:
             raise serializers.ValidationError({'error': 'Invalid credentials.'})
 
-        attrs['token'] = user.auth_token.key
+        attrs['user'] = user
         return attrs
