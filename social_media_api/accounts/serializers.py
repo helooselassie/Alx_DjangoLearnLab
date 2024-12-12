@@ -46,8 +46,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
+    password = serializers.CharField()
+    token = serializers.CharField()
 
     class Meta:
         model = User
