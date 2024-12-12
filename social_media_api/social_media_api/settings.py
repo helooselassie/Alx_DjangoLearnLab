@@ -20,14 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3wa7t^!4ej&f93^_-%u&qofoq42*h!!h3#gjt8n+mwd=ahiawe'
+SECRET_KEY = 'django-insecure-h64y0gip+qkj0m*ie4u55^45c7l271j5#j+d_b_ta&2ql4iq%g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Application definition
@@ -40,10 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
-    'rest_framework_simplejwt',
     'rest_framework',
-    'accounts',  
-    "posts", 
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -128,17 +124,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-APPEND_SLASH = False  # Ensures URLs end with a slash
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
-}
-
-
+AUTH_USER_MODEL = 'accounts.CustomUser'
