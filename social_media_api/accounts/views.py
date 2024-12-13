@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from .models import CustomUser
 
 
-
+CustomUser.objects.all()
 User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
