@@ -21,3 +21,6 @@ def generate_notification_on_like(sender, instance, created, **kwargs):
             verb='liked your post',
             target=instance.post
         )
+
+def some_function():
+    from .models import Notification, Follow        
