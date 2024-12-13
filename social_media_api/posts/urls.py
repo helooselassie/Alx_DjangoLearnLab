@@ -14,4 +14,5 @@ router.register(r'feed', FeedViewSet, basename='feed')
 urlpatterns = [
     path('', include(router.urls)),
     path('feed/', views.feed, name='feed'),
+    path('<int:pk>/like/', views.like_post, name='like_post'),
 ]

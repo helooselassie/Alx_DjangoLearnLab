@@ -1,9 +1,17 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
+class Like(models.Model):
+    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('post', 'user',)
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
