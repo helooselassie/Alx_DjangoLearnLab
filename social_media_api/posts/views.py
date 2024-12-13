@@ -7,9 +7,20 @@ from .models import Post, models
 from .serializers import PostSerializer
 from django.contrib.auth.decorators import login_required
 from .models import Post
+from .views import like_post
+from django.shortcuts import render
+
 
 
 User = get_user_model()
+
+def like_post(request):
+    post = get_object_or_404, in get_object_or_404
+    post = get_object_or_404(
+        pk=request.GET.get('pk')
+    )
+
+
 
 
 @login_required

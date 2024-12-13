@@ -5,9 +5,10 @@ from django.contrib.auth.models import Group, Permission
 class CustomUser(AbstractUser):
     bio = models.TextField(max_length=500, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_images', blank=True, null=True)
-    followers = models.ManyToManyField('self', related_name='following', symmetrical=False, blank=True)  
+    followers = models.ManyToManyField('self', related_name='following', symmetrical=False, blank=True)      
     groups = models.ManyToManyField(
-        related_name='user_set'
+        related_name='user_set',
+        to='groups'
     )
 
     
