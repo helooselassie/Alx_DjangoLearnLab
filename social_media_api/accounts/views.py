@@ -8,7 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from .serializers import CustomUserSerializer, UserFollowSerializer, RegisterSerializer, LoginSerializer
-from .models import User, Follow
+from .models import User, follow
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
 
