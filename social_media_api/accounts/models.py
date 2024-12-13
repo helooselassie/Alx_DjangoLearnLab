@@ -13,8 +13,7 @@ class CustomUser(AbstractUser):
     
     user_permissions = models.ManyToManyField(Group, related_name='userpermissions_set')
 
-    def save(self):
-        super().save(*args, **kwargs)
+    def save(self):        
         super().save()
 
 
