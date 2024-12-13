@@ -5,26 +5,34 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, render
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
-from .signals import generate_notification_on_like
+
 from django.contrib.auth.decorators import login_required
+from .models import Post
+from notifications.models import Notification
+from .models import Like  # Ensure Like model is imported
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+
 
 User = get_user_model()
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def like_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     like, created = Like.objects.get_or_create(user=request.user, post=post)
 
-    if not created:
+
+    if created:
+        # If created, generate notification for like
+        Notification.objects.create(user=post.author, message=f"{request.user.username} liked your post.")
+        return Response({'message': 'Liked'}, status=status.HTTP_201_CREATED)
+    else:
+        # If already liked, delete the like (unlike)
         like.delete()
-        # Generate notification for unlike
-        generate_notification_on_like(sender=Like, instance=like, created=False)
         return Response({'message': 'Unliked'}, status=status.HTTP_200_OK)
 
-    # Generate notification for like
-    generate_notification_on_like(sender=Like, instance=like, created=True)
-    return Response({'message': 'Liked'}, status=status.HTTP_200_OK)
 
 @login_required
 def feed(request):
