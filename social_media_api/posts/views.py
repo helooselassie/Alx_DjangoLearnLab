@@ -31,6 +31,18 @@ def like_post(request, pk):
         # If already liked, delete the like (unlike)
         like.delete()
         return Response({'message': 'Unliked'}, status=status.HTTP_200_OK)
+    
+
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    
+    # Try to get the existing Like instance
+    try:
+        like = Like.objects.get(user=request.user, post=post)
+        like.delete()  # Delete the like if it exists
+        return Response({'message': 'Unliked'}, status=status.HTTP_200_OK)
+    except Like.DoesNotExist:
+        return Response({'message': 'You have not liked this post'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @login_required
