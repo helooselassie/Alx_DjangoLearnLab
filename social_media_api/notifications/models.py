@@ -9,9 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 User = get_user_model()
 
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
-    post = models.ForeignKey('posts.Post', related_name='likes', on_delete=models.CASCADE)
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_likes')
+    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='post_likes')
     def __str__(self):
         return f"{self.user} liked {self.post}"
 
@@ -34,12 +33,16 @@ class Notification(models.Model):
     target_id = models.PositiveIntegerField()
     target = GenericForeignKey('target_ct', 'target_id')
     
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    message = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-timestamp',)
 
     def __str__(self):
         return f'{self.actor} {self.verb} {self.target}'
+    
+class Like(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
+    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='likes')
+
+    def __str__(self):
+        return f"{self.user} liked {self.post}"    

@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, render
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
-
 from django.contrib.auth.decorators import login_required
 from .models import Post
 from notifications.models import Notification
