@@ -1,0 +1,5 @@
+{% if user_to_follow not in user.followers.all %}
+  <a href="{% url 'accounts:followuser' user_to_follow.id %}">Follow</a>
+{% else %}
+  <a href="{% url 'accounts:unfollowuser' user_to_follow.id %}">Unfollow</a>
+{% endif %}

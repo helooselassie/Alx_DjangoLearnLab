@@ -2,14 +2,21 @@ from rest_framework import viewsets, permissions, response
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from .models import Post, models
 from .serializers import PostSerializer
+from django.contrib.auth.decorators import login_required
+from .models import Post
 
 
 User = get_user_model()
 
 
+@login_required
+def feed(request):
+    following_users = request.user.following.all()
+    posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+    return render(request, 'posts/feed.html', {'posts': posts})
 
 class FeedViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
