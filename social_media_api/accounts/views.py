@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 from .serializers import CustomUserSerializer, UserFollowSerializer, RegisterSerializer, LoginSerializer
 from .models import User, Follow
 from django.shortcuts import get_object_or_404
+from .models import CustomUser
 
 
 
@@ -46,4 +47,14 @@ class UserFollowViewSet(viewsets.ViewSet):
         user_to_unfollow = User.objects.get(id=user_id)
         if user_to_unfollow != request.user:
             request.user.following.remove(user_to_unfollow)
-        return {"detail": f"{request.user.username} is no longer following {user_to_unfollow.username}"}            
+        return {"detail": f"{request.user.username} is no longer following {user_to_unfollow.username}"}         
+
+def followuser(request, user_id):
+    user_to_follow = get_object_or_404(CustomUser, id=user_id)
+    request.user.customuser_set.add(user_to_follow)
+    return redirect('accounts:profile', user_id=user_to_follow.id)
+
+def unfollowuser(request, user_id):
+    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+    request.user.customuser_set.remove(user_to_unfollow)
+    return redirect('accounts:profile', user_id=user_to_unfollow.id)    
