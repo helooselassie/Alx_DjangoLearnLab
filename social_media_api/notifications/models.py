@@ -9,14 +9,18 @@ from django.contrib.contenttypes.models import ContentType
 User = get_user_model()
 
 class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
+    post = models.ForeignKey('posts.Post', related_name='likes', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.user} liked {self.post}"
 
 class Follow(models.Model):
-    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following', on_delete=models.CASCADE)
-    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followers', on_delete=models.CASCADE)
-    
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following_users', on_delete=models.CASCADE)
+    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followers_users', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.follower} follows {self.followed}"
 class Notification(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.CharField(max_length=255)
@@ -26,6 +30,13 @@ class Notification(models.Model):
     verb = models.CharField(max_length=255)
     target = GenericForeignKey('target_ct', 'target_id')
     timestamp = models.DateTimeField(auto_now_add=True)
+    target_ct = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.PositiveIntegerField()
+    target = GenericForeignKey('target_ct', 'target_id')
+    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-timestamp',)
