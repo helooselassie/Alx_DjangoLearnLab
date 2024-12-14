@@ -15,8 +15,9 @@ class Like(models.Model):
         return f"{self.user} liked {self.post}"
 
 class Follow(models.Model):
-    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following_users', on_delete=models.CASCADE)
-    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followers_users', on_delete=models.CASCADE)
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following_notifications', on_delete=models.CASCADE)
+    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followers_notifications', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.follower} follows {self.followed}"

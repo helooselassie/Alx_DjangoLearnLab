@@ -1,20 +1,78 @@
 from rest_framework import generics, status
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, serializers
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
-from accounts.serializers import CustomUserSerializer, RegisterSerializer, LoginSerializer
+from accounts.serializers import (
+    CustomUserSerializer, 
+    RegisterSerializer, 
+    LoginSerializer, 
+    UserRegisterSerializer, 
+    UserLoginSerializer, 
+    UserSerializer, 
+    UserDetailSerializer,
+)
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from .serializers import CustomUserSerializer, UserFollowSerializer, RegisterSerializer, LoginSerializer
-from .models import User, follow
+from .models import User
 from django.shortcuts import get_object_or_404, redirect
 from .models import CustomUser
+from rest_framework.authtoken.models import Token
+from posts.models import Post
+from posts.serializers import PostSerializer
+
+
+
 
 
 CustomUser.objects.all()
 User = get_user_model()
+
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user_to_unfollow = User.objects.get(id=user_id)
+            request.user.following.remove(user_to_unfollow)  # Remove from following
+            return Response({'message': f'You have unfollowed {user_to_unfollow.username}'})
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+
+class FollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        try:
+            user_to_follow = User.objects.get(id=user_id)
+            request.user.following.add(user_to_follow)  # Add to following
+            return Response({'message': f'You are now following {user_to_follow.username}'})
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+class UserRegisterView(generics.CreateAPIView):    
+    serializer_class = UserRegisterSerializer
+    permission_classes = (permissions.AllowAny,)
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+class UserFeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Get posts from users that the current user follows
+        followed_users = self.request.user.following.all()
+        return Post.objects.filter(author__in=followed_users).order_by('-created_at')
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 

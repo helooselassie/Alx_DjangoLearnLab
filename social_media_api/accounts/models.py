@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.contrib.auth.models import Group, Permission
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from django.conf import settings
+
+
+
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='following_accounts', on_delete=models.CASCADE)
+    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followers_accounts', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.follower} follows {self.followed}"
 
 class CustomUser(AbstractUser, PermissionsMixin):
     bio = models.TextField(max_length=500, blank=True, null=True)
@@ -40,3 +55,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username    
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture')    
