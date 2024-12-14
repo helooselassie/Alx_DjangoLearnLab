@@ -5,12 +5,17 @@ from django.contrib.auth.models import Group, Permission
 class CustomUser(AbstractUser, PermissionsMixin):
     bio = models.TextField(max_length=500, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_images', blank=True, null=True)
-    followers = models.ManyToManyField('self', symmetrical=True, blank=True)      
+    followers = models.ManyToManyField('self', blank=True)      
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='customer_set',
         blank=True,
-    )    
+    )  
+
+    following = models.ManyToManyField('self', symmetrical=True, blank=True)
+
+    def __str__(self):
+        return self.username  
 
     user_permissions = models.ManyToManyField(
         'auth.Permission',
@@ -31,7 +36,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         return self.is_staff or self.is_superuser
     
 class User(AbstractUser):
-    following = models.ManyToManyField('self', blank=True, related_name='followers')
+    following = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
         return self.username    
