@@ -7,3 +7,4 @@ psycopg2==2.9.10
 PyJWT==2.10.1
 sqlparse==0.5.2
 tzdata==2024.2
+django-filter
