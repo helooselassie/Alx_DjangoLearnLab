@@ -62,25 +62,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField()
-    token = serializers.CharField()
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'password', 'email', 'token')
-
-    def validate(self, attrs):
-        user = authenticate(
-            username=attrs['username'],
-            password=attrs['password']
-        )
-
-        if not user:
-            raise serializers.ValidationError({'error': 'Invalid credentials.'})
-
-        attrs['user'] = user
-        return attrs
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user:
+                data['user'] = user
+                return data
+        raise serializers.ValidationError("Invalid credentials")
     
 class UserFollowSerializer(serializers.ModelSerializer):
     class Meta:

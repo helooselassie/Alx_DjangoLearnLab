@@ -86,13 +86,16 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
     
 class UserView(generics.RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
@@ -123,4 +126,5 @@ def followuser(request, user_id):
 def unfollowuser(request, user_id):
     user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
     request.user.customuser_set.remove(user_to_unfollow)
-    return redirect('accounts:profile', user_id=user_to_unfollow.id)    
+    return redirect('accounts:profile', user_id=user_to_unfollow.id) 
+   
