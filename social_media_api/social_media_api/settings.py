@@ -148,4 +148,16 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ),
-}    
+}   
+
+# Enable XSS protection
+SECURE_BROWSER_XSS_FILTER = True  # Adds the X-XSS-Protection header
+
+# Set X-Frame-Options to prevent clickjacking
+X_FRAME_OPTIONS = 'DENY'  # Options: 'DENY', 'SAMEORIGIN', or 'ALLOW-FROM uri'
+
+# Prevent MIME type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Adds the X-Content-Type-Options header
+
+# Redirect all HTTP connections to HTTPS
+SECURE_SSL_REDIRECT = True  # Redirects all HTTP requests to HTTPS
