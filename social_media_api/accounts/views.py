@@ -29,6 +29,8 @@ from rest_framework.authtoken.models import Token
 from posts.models import Post
 from posts.serializers import PostSerializer
 from rest_framework.permissions import AllowAny
+from .serializers import RegistrationSerializer
+from rest_framework.views import APIView
 
 
 
@@ -126,5 +128,21 @@ def followuser(request, user_id):
 def unfollowuser(request, user_id):
     user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
     request.user.customuser_set.remove(user_to_unfollow)
-    return redirect('accounts:profile', user_id=user_to_unfollow.id) 
-   
+    return redirect('accounts:profile', user_id=user_to_unfollow.id)
+
+
+class RegistrationView(APIView):
+    def post(self, request):
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                },
+                'token': token.key,
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
