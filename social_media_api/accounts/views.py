@@ -11,17 +11,24 @@ from accounts.serializers import (
     UserSerializer, 
     UserDetailSerializer,
 )
+from .serializers import RegisterSerializer
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from .serializers import CustomUserSerializer, UserFollowSerializer, RegisterSerializer, LoginSerializer
+from .serializers import (
+    CustomUserSerializer, 
+    UserFollowSerializer, 
+    RegisterSerializer, 
+    LoginSerializer,
+)    
 from .models import User
 from django.shortcuts import get_object_or_404, redirect
 from .models import CustomUser
 from rest_framework.authtoken.models import Token
 from posts.models import Post
 from posts.serializers import PostSerializer
+from rest_framework.permissions import AllowAny
 
 
 
@@ -75,6 +82,7 @@ class UserFeedView(generics.ListAPIView):
         return Post.objects.filter(author__in=followed_users).order_by('-created_at')
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer

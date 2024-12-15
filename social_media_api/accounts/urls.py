@@ -3,6 +3,7 @@ from .views import RegisterView, LoginView
 from .views import UserFollowViewSet
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import RegisterView
 
 router = DefaultRouter()
 router.register(r'follow', UserFollowViewSet, basename='follow')
@@ -13,4 +14,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('follow/<int:user_id>/', views.followuser, name='followuser'),
     path('unfollow/<int:user_id>/', views.unfollowuser, name='unfollowuser'),
+    path('api/register/', RegisterView.as_view(), name='register'),
 ]

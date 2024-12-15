@@ -58,4 +58,16 @@ class User(AbstractUser):
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture')    
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture')
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User  # Ensure this is the correct model
+        fields = ('username', 'password', 'email')  # Include necessary fields
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data['password'])  # Hash the password
+        
+        user.save()
+        return user    

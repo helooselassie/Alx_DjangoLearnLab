@@ -21,5 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('posts.urls')),    
     path('accounts/', include('accounts.urls')),  
-    path('posts/', include('posts.urls')),    
+    path('posts/', include('posts.urls')), 
+    path('', include('posts.urls')),   
+    path('', include('accounts.urls')),
+    #path('', include('social_media_api.urls')),
 ]
