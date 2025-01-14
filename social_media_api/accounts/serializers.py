@@ -3,18 +3,24 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from .models import User
+from accounts.models import CustomUser
+from .models import CustomUser
 
-
-User = get_user_model().objects.create_user
+#CustomUser = get_user_model()
+User = get_user_model()
+#.objects.create_user
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'bio', 'profile_picture']
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -33,6 +39,8 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Must include 'username' and 'password'.")
 
         return data
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -52,7 +60,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')  # Include necessary fields
+        fields = ('id', 'username', 'password', 'email')  # Include necessary fields
 
     def create(self, validated_data):
         user = User(**validated_data)
@@ -67,14 +75,13 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if user:
-                data['user'] = user
-                return data
-        raise serializers.ValidationError("Invalid credentials")
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email']
     
 class UserFollowSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,7 +93,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'bio', 'profile_picture']
+        fields = ['id', 'username', 'email', 'password', 'bio', 'profile_picture']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -97,12 +104,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'password', 'bio', 'profile_picture']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        # Create a token for the new user
-        Token.objects.create(user=user)
-        return user    
+        user = CustomUser.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        return user
+
+    print("Debug:", CustomUser._meta)
+    print("Model in Serializer:", User)
+    print("CustomUser model:", CustomUser)  # Add this in serializers.py
+
+     

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-
+from accounts.models import CustomUser
 
 
 User = get_user_model()
@@ -21,9 +21,12 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.follower} follows {self.followed}"
+
+
 class Notification(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    message = models.CharField(max_length=255)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     actor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications_as_actor')
@@ -35,10 +38,7 @@ class Notification(models.Model):
     target = GenericForeignKey('target_ct', 'target_id')
     
 
-    class Meta:
-        ordering = ('-timestamp',)
-
     def __str__(self):
-        return f'{self.actor} {self.verb} {self.target}'
+        return self.message
     
   

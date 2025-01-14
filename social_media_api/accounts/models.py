@@ -1,12 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import Group, Permission
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.conf import settings
+#from accounts.models import CustomUser
+#from django.contrib.auth import get_user_model
 
-
-
+#CustomUser = get_user_model()
 
 
 class Follow(models.Model):
@@ -17,44 +18,35 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.follower} follows {self.followed}"
 
-class CustomUser(AbstractUser, PermissionsMixin):
-    bio = models.TextField(max_length=500, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_images', blank=True, null=True)
-    followers = models.ManyToManyField('self', blank=True)      
+class CustomUser(AbstractUser):
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
     groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='customer_set',
-        blank=True,
-    )  
-
-    following = models.ManyToManyField('self', symmetrical=True, blank=True)
-
-    def __str__(self):
-        return self.username  
-
+        Group,
+        related_name="customuser_groups",  # Unique related_name
+        blank=True
+    )
     user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='custom_user_set',  # Change this to something unique
-        blank=True,
-    )    
-    
+        Permission,
+        related_name="customuser_user_permissions",  # Unique related_name
+        blank=True
+    )
 
-  
+    class Meta:
+        verbose_name = "Custom User"
+        verbose_name_plural = "Custom Users"
+
     def __str__(self):
         return self.username
-    
-    
-    
-    
-    @property
-    def is_staff_or_superuser(self):
-        return self.is_staff or self.is_superuser
     
 class User(AbstractUser):
     following = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
-        return self.username    
+        return self.username  
+        
+          
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -63,7 +55,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User  # Ensure this is the correct model
-        fields = ('username', 'password', 'email')  # Include necessary fields
+        fields = ('id', 'username', 'password', 'email')  # Include necessary fields
 
     def create(self, validated_data):
         user = User(**validated_data)
@@ -71,3 +63,4 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         user.save()
         return user    
+    

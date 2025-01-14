@@ -19,4 +19,4 @@ venv/
 .DS_Store
 
 # Environment variable file (not safe for public repos)
-.env
+.venv
